@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-require './BubbleTest'
+require './bubble_sort'
 
-describe Sort do
+describe Array do
   it 'can sort' do
-    @sort=[3,2,1]
-    result=[1,2,3]
-    Sort.new(@sort).bubble()
-    @sort.should==result
+    array=[3,2,1]
+    array.bubblesort
+    array.should==[1,2,3]
   end
-
+end
+=begin
   it 'can sort string' do
     @sort = %w[ c b a ]
 
@@ -34,6 +34,12 @@ describe Sort do
     @sort.should == [2,2,3,4,7,8,8,9]
   end
 
+  it '文字と数字が混ざっているとき' do
+    array = [c,3,b,2,a,1]
+    array.bubblesort
+    @sort.should == [a,b,c,1,2,3]
+  end
+
   it 'ソートのできないオブジェクトをソートするときエラーを返す' do
     hash = [ { :a => :b }, { :b => :c } ]
     expect {Sort.new(hash).bubble()}.to raise_exception
@@ -50,3 +56,4 @@ describe Sort do
   end
 
 end
+=end
