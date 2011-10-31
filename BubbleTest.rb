@@ -15,12 +15,15 @@ class Sort
     end
   end
 end
-NUM=10
-sort = Array.new(NUM)
-sort.each_index do |i|
-  sort[i] = rand(100)
-  p sort[i]
+
+if $0 == __FILE__
+  NUM=10
+  sort = Array.new(NUM)
+  sort.each_index do |i|
+    sort[i] = rand(100)
+    p sort[i]
+  end
+  s = Sort.new(sort)
+  s.bubble()
+  p sort
 end
-s = Sort.new(sort)
-s.bubble()
-p sort
