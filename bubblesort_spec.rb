@@ -48,4 +48,5 @@ describe Sort do
     @sort = [Complex(1,3),Complex(3,2)]
     expect{Sort.new(@sort).bubble()}.to raise_exception
   end
+
 end

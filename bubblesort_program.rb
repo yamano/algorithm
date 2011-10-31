@@ -15,7 +15,6 @@ class Sort
     end
   end
 end
-
 if $0 == __FILE__
   NUM=10
   sort = Array.new(NUM)
