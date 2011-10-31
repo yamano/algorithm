@@ -2,7 +2,7 @@ class Sort
   def initialize(array)
     @array = array
   end
-  def bubble()
+  def bubble
     count=0
     (0...@array.size-1).each do
       (0...@array.size-1-count).each do |i|
@@ -19,6 +19,6 @@ if $0 == __FILE__
   NUM=10
   p array = (0...NUM).map{|item| rand(100)}
   s = Sort.new(array)
-  s.bubble()
+  s.bubble
   p array
 end
