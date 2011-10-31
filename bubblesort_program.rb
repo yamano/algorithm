@@ -17,11 +17,7 @@ end
 
 if $0 == __FILE__
   NUM=10
-  array = Array.new(NUM)
-  array.each_index do |i|
-    array[i] = rand(100)
-    p array[i]
-  end
+  p array = (0...NUM).map{|item| rand(100)}
   s = Sort.new(array)
   s.bubble()
   p array
