@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+require 'benchmark'
+
 class Array
   #　無限ループする可能性がある
   def quick_sort(&block)
@@ -22,4 +24,17 @@ if $0 == __FILE__
   NUM=10
   p array = NUM.times.map {|item| rand(100) }
   p array.quick_sort {|array| array.sample }
+
+
+  n =1000000
+  Benchmark.bm(15) do |x|
+    x.report("my_quick_sort:"){
+      array=n.times.map{|item| rand(100)}
+      array.quick_sort{|array| array.sample}
+    }
+    x.report("quick_sort:"){
+      array=n.times.map{|item| rand(100)}
+      array.sort
+      }
+  end
 end
