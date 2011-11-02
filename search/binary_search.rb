@@ -12,7 +12,7 @@ class Array
         return array.binary_search(ans) + mid + 1
       end
     end
-    self.size
+    mid
   end
 end
 
@@ -23,6 +23,7 @@ if $0 == __FILE__
   if array[array.binary_search(ans)] == ans
     puts "success"
   else
+    p array.binary_search(ans)
     puts "failue"
   end
 end
