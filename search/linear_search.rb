@@ -1,22 +1,22 @@
 class Array
-  def linear_search(ans)
-    self.size.times do |i|
-      if self[i] == ans
-        return i
+  def linear_search(target)
+    self.each_with_index do |item,index|
+      if item == target
+        return index
       end
     end
-    return self.size
+    nil
   end
 end
 
 if $0 == __FILE__
   NUM = 10
   p array = NUM.times.map{|item| rand(10)}
-  p ans = rand(10)
-  if array[array.linear_search(ans)] == ans
-    puts "success"
-  else
+  target = rand(10)
+  print "target = #{target}\n"
+  if array.linear_search(target) == nil
     puts "failue"
-    # p array[array.linear_search(ans)]
+  elsif array[array.linear_search(target)] == target
+    print "array[#{array.linear_search(target)}]==#{target} success\n"
   end
 end
