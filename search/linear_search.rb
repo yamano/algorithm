@@ -14,9 +14,9 @@ if $0 == __FILE__
   p array = NUM.times.map{|item| rand(10)}
   target = rand(10)
   print "target = #{target}\n"
-  if array.linear_search(target) == nil
+  if array.linear_search(target)
+    print "array[#{array.linear_search(target)}] == #{target} success\n"
+  else
     puts "failue"
-  elsif array[array.linear_search(target)] == target
-    print "array[#{array.linear_search(target)}]==#{target} success\n"
   end
 end

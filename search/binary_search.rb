@@ -3,12 +3,8 @@ class Array
     middle = (self.size-1)/2
     if self.size > 1
       if self[middle] >= target
-        answer=self[0..middle].binary_search(target)
-        if answer == nil
-          return nil
-        else
-          return answer
-        end
+        answer = self[0..middle].binary_search(target)
+        return answer
       else
         answer =  self[middle+1..-1].binary_search(target)
         if answer == nil
@@ -31,9 +27,9 @@ if $0 == __FILE__
   p array = NUM.times.map{|item| rand(10)}.sort
   target = rand(10)
   print "target = #{target}\n"
-  if array.binary_search(target) == nil
+  if array.binary_search(target)
+    print "array[#{array.binary_search(target)}] == #{target} success\n"
+  else
     puts "failue"
-  elsif array[array.binary_search(target)]==target
-    print "array[#{array.binary_search(target)}]==#{target} success\n"
   end
 end
