@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
-$LOAD_PATH << File.dirname(__FILE__)
-require 'bubble_sort'
+require './quick_sort'
 
 describe Array do
   it 'can sort' do
     array=[3,2,1]
-    result=array.bubble_sort
-    result.should==[1,2,3]
+    array.quick_sort{z|array| array.sample}.should==[1,2,3]
   end
 
   it 'can sort string' do
     array = %w[ c b a ]
 
-    result=array.bubble_sort
+    result=array.quick_sort
     result.should == %w[a b c]
   end
 
