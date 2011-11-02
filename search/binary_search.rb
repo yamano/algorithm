@@ -1,29 +1,37 @@
 class Array
-  def binary_search(ans)
-    mid = self.size/2
+  def binary_search(target)
+    middle = self.size/2
     if self.size >= 1
-      if self[mid] == ans
-        return mid
-      elsif self[mid] > ans
-        array =  self[0...mid]
-        return array.binary_search(ans)
-      elsif self[mid] < ans
-        array =  self[mid+1...self.size]
-        return array.binary_search(ans) + mid + 1
+      if self[middle] == target
+        return middle
+      elsif self[middle] > target
+        answer=self[0...middle].binary_search(target)
+        if answer == nil
+          return nil
+        else
+          return answer
+        end
+      elsif self[middle] < target
+        answer =  self[middle+1..-1].binary_search(target)
+        if answer == nil
+          return nil
+        else
+          return answer + middle + 1
+        end
       end
     end
-    mid
+    nil
   end
 end
 
 if $0 == __FILE__
   NUM = 10
-  p array = NUM.times.map{|iten| rand(10)}.sort
-  p ans = rand(10)
-  if array[array.binary_search(ans)] == ans
-    puts "success"
-  else
-    p array.binary_search(ans)
+  p array = NUM.times.map{|item| rand(10)}.sort
+  target = rand(10)
+  print "target = #{target}\n"
+  if array.binary_search(target) == nil
     puts "failue"
+  elsif array[array.binary_search(target)]==target
+    print "array[#{array.binary_search(target)}]==#{target} success\n"
   end
 end
