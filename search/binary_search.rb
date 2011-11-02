@@ -1,23 +1,25 @@
 class Array
   def binary_search(target)
-    middle = self.size/2
-    if self.size >= 1
-      if self[middle] == target
-        return middle
-      elsif self[middle] > target
-        answer=self[0...middle].binary_search(target)
+    middle = (self.size-1)/2
+    if self.size > 1
+      if self[middle] >= target
+        answer=self[0..middle].binary_search(target)
         if answer == nil
           return nil
         else
           return answer
         end
-      elsif self[middle] < target
+      else
         answer =  self[middle+1..-1].binary_search(target)
         if answer == nil
           return nil
         else
-          return answer + middle + 1
+          return answer + middle +1
         end
+      end
+    else
+      if self[0] == target
+        return middle
       end
     end
     nil
