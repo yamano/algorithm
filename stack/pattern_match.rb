@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+class Array  
+  def initialize(char, position)
+    @char = char
+    @position = position
+  end
+  attr_accessor :char, :position
+end
+
 class Pattern_match
   def pattern_match(contents)
     stack = []
