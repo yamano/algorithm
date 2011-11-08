@@ -1,5 +1,7 @@
 def gcd(a, b)
-  min = [ a, b ].min
+  raise ArgumentError, "args include zero" if a == 0 or b == 0
+
+  min = [ a.abs, b.abs ].min
 
   max = nil
   (1..min).each do |i|
