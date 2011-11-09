@@ -1,31 +1,27 @@
-def search_num_of_hirakinaori(*args)
-  args_copy = args.dup
-  target = 0
-  args_copy.size.times do |i|
-    temp = args_copy.shift
-    next if temp == 0
-    target += temp ** temp
+def calc_hirakinaori(args)
+  args.inject(0) do |sum, item|
+    sum + ( item == 0 ?  0 : item ** item )
   end
+end
 
-  args_copy = args.dup
-  target_copy = target
-  args.size.times do
-    answer = target_copy % 10
-    target_copy /= 10
-    args.size.times do |i|
-      if answer == args_copy[i]
-        args_copy[i] = nil
-        args_copy.compact!
-        break
-      end
-    end
+def match_numbers?(target, args)
+  expected_array = target.to_s.scan(/(.)/).flatten.map(&:to_i).select {|i| i != 0 }.sort
+  actual_array   = args.select {|i| i != 0 }.sort
+
+  actual_array == expected_array
+end
+
+def search_num_of_hirakinaori(args)
+  target = calc_hirakinaori(args)
+  if match_numbers?(target, args)
+    target
+  else
+    nil
   end
-  return nil if args_copy != []
-  p args
-  p target
 end
 
 def make_numbers
+  args = []
   (0..9).each do |i|
     (i..9).each do |j|
       (j..9).each do |k|
@@ -36,7 +32,7 @@ def make_numbers
                 (o..9).each do |p|
                   (p..9).each do |q|
                     (q..9).each do |r|
-                      search_num_of_hirakinaori(*[i, j, k, l, m, n, o, p, q, r])
+                      args.push([i, j, k, l, m, n, o, p, q, r])
                       end
                     end
                   end
@@ -47,20 +43,15 @@ def make_numbers
       end
     end
   end
+  return args
 end
-=begin
-def new_make_numbers(start, kosuu, array)
-  return if kosuu > 10
-  (start..9).each do |i|
-    array[i] += 1
-    search_num_of_hirakinaori(*array)
-    new_make_numbers(i, kosuu + 1, array)
-    array[i] -= 1
+
+if $0 == __FILE__
+  args = make_numbers
+  
+  args.each do |item|
+    if num = search_num_of_hirakinaori(item)
+      puts num
+    end
   end
 end
-  
-a = [0,0,0,0,0,0,0,0,0,0]
-new_make_numbers(1, 1, a)
-=end
-
-make_numbers
