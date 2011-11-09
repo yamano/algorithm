@@ -20,7 +20,7 @@ def search_num_of_hirakinaori(*args)
       end
     end
   end
-  return nil if args_copy != [] || target_copy != 0
+  return nil if args_copy != []
   p args
   p target
 end
@@ -48,5 +48,19 @@ def make_numbers
     end
   end
 end
+=begin
+def new_make_numbers(start, kosuu, array)
+  return if kosuu > 10
+  (start..9).each do |i|
+    array[i] += 1
+    search_num_of_hirakinaori(*array)
+    new_make_numbers(i, kosuu + 1, array)
+    array[i] -= 1
+  end
+end
+  
+a = [0,0,0,0,0,0,0,0,0,0]
+new_make_numbers(1, 1, a)
+=end
 
 make_numbers
