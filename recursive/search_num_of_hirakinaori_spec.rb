@@ -12,3 +12,9 @@ describe "search_num_of_hirakinaori" do
     end
   end
 end
+
+describe "make_numbers" do
+  it "" do
+    make_numbers(2).size == 55
+  end
+end

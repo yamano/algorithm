@@ -3,24 +3,50 @@ def search_num_of_hirakinaori(*args)
   target = 0
   args_copy.size.times do |i|
     temp = args_copy.shift
+    next if temp == 0
     target += temp ** temp
   end
 
-  p args2 = args.dup
+  args_copy = args.dup
   target_copy = target
-  args2.size.times do
+  args.size.times do
     answer = target_copy % 10
     target_copy /= 10
-    args2.size.times do |i|
-      if answer == args2[i]
-        args2[i] = nil
-        args2.compact!
+    args.size.times do |i|
+      if answer == args_copy[i]
+        args_copy[i] = nil
+        args_copy.compact!
         break
       end
     end
   end
-  #p args2
-  return nil if args2 != []
-  target
+  return nil if args_copy != [] || target_copy != 0
+  p args
+  p target
 end
 
+def make_numbers
+  (0..9).each do |i|
+    (i..9).each do |j|
+      (j..9).each do |k|
+        (k..9).each do |l|
+          (l..9).each do |m|
+            (m..9).each do |n|
+              (n..9).each do |o|
+                (o..9).each do |p|
+                  (p..9).each do |q|
+                    (q..9).each do |r|
+                      search_num_of_hirakinaori(*[i, j, k, l, m, n, o, p, q, r])
+                      end
+                    end
+                  end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+make_numbers
