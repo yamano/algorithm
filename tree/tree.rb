@@ -97,15 +97,28 @@ class Tree_node
   def delete_node(value)
     if ret = find_parent(value)
       node, parent = *ret
-      parent.delete(node)
+      parent.delete(node, parent)
       true
     else
       false
     end
   end
   
-  def delete(node)
+  def delete(node, parent)
+    if node.left && node.right
+      
+    elsif node.left
+      node.swap_node(node.left, parent)
+    elsif node.right
+      node.swap_node(node.right, parent)
+    else
+      
+    end
     clear(which(node))
+  end
+
+  def swap_node(node, parent)
+    node, parent = parent, node
   end
 end
 
