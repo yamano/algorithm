@@ -3,11 +3,11 @@ class Pattern_match
   def pattern_match(contents)
     stack = []
     queue = []
-    contents.each_char.with_index do |item ,i|
+    contents.zeach_char.with_index do |item ,i|
       if (item == "(" ) || (item == "{")
-        stack.push( {item => i})
+        stack.push( { char => item , position => i } )
       elsif item == ")"
-        if stack != [] && stack[-1].map{|char, position| char} == ["("]
+        if stack != [] && stack[stack.last].map{|char, position| char} == ["("]
           print "#{stack[-1].map{|char, position| position}}番目の #{stack[-1].map{|char, position| char}} と [#{i}] 番目の [\"#{item}\"] が対応しています\n"
           stack.pop
         else

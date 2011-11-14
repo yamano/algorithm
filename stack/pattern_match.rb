@@ -44,7 +44,7 @@ class Pattern_match
     end
     stack.each_index do |i|
       print "#{stack_index[i]}番目の \"#{stack[i]}\" が閉じられていません\n"
-      #p index.pop
+
     end
     queue.each_index do |i|
       print "#{queue_index[i]}番目の \"#{queue[i]}\" が開かれていません\n"
