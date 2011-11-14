@@ -106,27 +106,65 @@ class Tree_node
   
   def delete(node, parent)
     if node.left && node.right
-      
+      max_node = node.left.search_max_node
+      if parent > node
+        parent.left.value = max_node.value
+        # node.left.search_max_node = nil
+      elsif
+        parent.right.value = max_node.value
+        # node.left.search_max_node = nil
+      end
     elsif node.left
-      node.swap_node(node.left, parent)
+      if parent > node
+        parent.left.value = node.left.value
+        node.left = nil
+      else
+        parent.right.value = node.left.value
+        node.left = nil
+      end
     elsif node.right
-      node.swap_node(node.right, parent)
+      if parent > node
+        parent.left.value  = node.right.value
+        node.right = nil
+      else
+        parent.right.value = node.right.value
+        node.right = nil
+      end
     else
-      
+      clear(which(node))
     end
-    clear(which(node))
+    
+  end
+
+  def search_max_node
+    if self.right
+      self.right.search_max_node
+    else
+      self
+    end
   end
 
   def swap_node(node, parent)
-    node, parent = parent, node
+    
+    #node, parent = parent, node
   end
 end
 
 if $0 == __FILE__
-  tree_node = Tree_node.new(10)
-  tree_node.insert_tree(8)
-  tree_node.left
-  tree_node.left.left
-  tree_node.insert_tree(3)
-  tree_node.left.left
+  tree_node = Tree_node.new(20)
+  tree_node.insert_tree(15)
+  tree_node.insert_tree(10)
+  tree_node.insert_tree(18)
+  tree_node.insert_tree(5)
+  tree_node.insert_tree(13)
+  tree_node.insert_tree(30)
+  tree_node.insert_tree(25)
+  tree_node.insert_tree(23)
+  tree_node.insert_tree(28)
+  tree_node.insert_tree(35)
+  tree_node.delete_node(15)
+  tree_node.delete_node(30)
+  
+
+  p tree_node.right.left.right.value
 end
