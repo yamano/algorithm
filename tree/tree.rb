@@ -97,43 +97,27 @@ class Tree_node
   def delete_node(value)
     if ret = find_parent(value)
       node, parent = *ret
-      parent.delete(node, parent)
+      if node.left || node.right
+        swap_delete_node(node, swap_delete_target(node))
+      else
+        clear(which(node))
+      end
       true
     else
       false
     end
   end
-  
-  def delete(node, parent)
+
+  def swap_delete_target(node)
     if node.left && node.right
-      max_node = node.left.search_max_node
-      if parent > node
-        parent.left.value = max_node.value
-        # node.left.search_max_node = nil
-      elsif
-        parent.right.value = max_node.value
-        # node.left.search_max_node = nil
-      end
+      node.left.search_max_node
     elsif node.left
-      if parent > node
-        parent.left.value = node.left.value
-        node.left = nil
-      else
-        parent.right.value = node.left.value
-        node.left = nil
-      end
+      node.left
     elsif node.right
-      if parent > node
-        parent.left.value  = node.right.value
-        node.right = nil
-      else
-        parent.right.value = node.right.value
-        node.right = nil
-      end
+      node.right
     else
-      clear(which(node))
+      nil
     end
-    
   end
 
   def search_max_node
@@ -144,9 +128,8 @@ class Tree_node
     end
   end
 
-  def swap_node(node, parent)
-    
-    #node, parent = parent, node
+  def swap_delete_node(node, target)
+    node.value, target.value = target.value, nil
   end
 end
 
