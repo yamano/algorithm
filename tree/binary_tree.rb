@@ -37,14 +37,6 @@ class BinaryTree
     end
   end
 
-  def which_parent(value)
-    if value < @value
-      :right
-    else
-      :left
-    end
-  end
-
   def insert_node(value)
     unless @value
       @value = value
@@ -101,12 +93,38 @@ class BinaryTree
     end
     nil
   end
-  
+
+=begin
+  def find_parent(value)
+    if self == value
+      return [ self, nil ]
+      if @left || @right
+        node, parent = *get(which(value)).find_parent(value)
+        p node.value
+        unless parent
+          return node, self
+        else
+          return node, parent
+        end
+      end
+      nil
+    end
+  end
+=end
+
+
   def delete_node(value)
-    ret = find_parent(value)
-    node, parent = *ret
+    node, parent = *find_parent(value)
     if node.left
-      swap_delete_node(node, find_target_to_swap(node))
+      target_node, target_parent = *self.find_parent(find_target_to_swap(node).value)
+      node.value = target_node.value
+      #get(which(target_node.value)) = target_node.left
+      if target_parent < target_node
+        target_parent.right = target_node.left
+      elsif
+        target_parent.left = target_node.left
+      end
+      #swap_delete_node(node, find_target_to_swap(node))
     elsif node.right
       if parent < node
         parent.right = node.right
@@ -137,7 +155,7 @@ class BinaryTree
   end
   
   def swap_delete_node(node, target)
-    node.value, target.value = target.value, target.left ||= self.class.new
+    #node.value, target. = target.value, target.left ||= self.class.new
   end
   
   def swap_node(node)
@@ -147,23 +165,25 @@ class BinaryTree
       node = nil
     end
   end
+
 end
 
 if $0 == __FILE__
   tree_node = BinaryTree.new(20)
-  tree_node.insert_tree(15)
-  tree_node.insert_tree(10)
-  tree_node.insert_tree(18)
-  tree_node.insert_tree(5)
-  tree_node.insert_tree(13)
-  tree_node.insert_tree(30)
-  tree_node.insert_tree(25)
-  tree_node.insert_tree(23)
-  tree_node.insert_tree(28)
-  tree_node.insert_tree(35)
+  tree_node.insert_node(15)
+  tree_node.insert_node(10)
+  tree_node.insert_node(18)
+  tree_node.insert_node(5)
+  tree_node.insert_node(13)
+  tree_node.insert_node(30)
+  tree_node.insert_node(25)
+  tree_node.insert_node(23)
+  tree_node.insert_node(28)
+  tree_node.insert_node(35)
   tree_node.delete_node(15)
-  tree_node.delete_node(30)
+  #tree_node.delete_node(30)
   
-
-  p tree_node.right.left.right.value
+  #b, c = *tree_node.get(tree_node.which(10)).find_parent(10)
+  #p d, e = *tree_node.find_parent(10)
+  #p b.value, c.value
 end

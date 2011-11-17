@@ -71,11 +71,16 @@ describe BinaryTree do
     @tree_node.insert_node(23)
     @tree_node.insert_node(28)
     @tree_node.insert_node(26)
+    @tree_node.insert_node(27)
     @tree_node.insert_node(35)
     @tree_node.insert_node(40)
     @tree_node.delete_node(15)
     @tree_node.delete_node(30)
   end
+
+  #it '' do
+   # *(get(which(13)).find_parent(13).should).value == [20,13]
+  #end
 
   context '子孫を持つノードを削除する' do
     it '' do
@@ -83,6 +88,7 @@ describe BinaryTree do
       @tree_node.right.should matcher(28, 25, 35)
       @tree_node.right.right.should matcher(35, nil, 40)
       @tree_node.right.left.should matcher(25, 23, 26)
+      @tree_node.right.left.right.should matcher(26, nil, 27)
     end
   end
 
