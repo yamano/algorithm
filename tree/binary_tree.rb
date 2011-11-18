@@ -1,8 +1,9 @@
 class BinaryTree
-  def initialize(value = nil)
+  def initialize(key = nil, value = nil)
+    @key = key
     @value = value
   end
-  attr_accessor  :value, :left, :right
+  attr_accessor :key, :value, :left, :right
 
   def get(direction)
     send("get_#{direction}")
@@ -15,19 +16,7 @@ class BinaryTree
   def get_left
     @left ||= self.class.new
   end
-=begin
-  def set(direction, node)
-    send("set_#{direction}(#{node})")
-  end
 
-  def set_right(node)
-    @right = node
-  end
-
-  def set_left(node)
-    @left = node
-  end
-=end
   def clear(direction)
     send("clear_#{direction}")
   end
@@ -40,35 +29,38 @@ class BinaryTree
     @left = nil
   end
 
-  def which(value)
-    if value < @value
+  def which(key)
+    if key < @key
       :left
     else
       :right
     end
   end
 
-  def insert_node(value)
-    unless @value
+  def insert_node(key, value)
+    return nil if @key == key
+
+    unless @key && @value
+      @key = key
       @value = value
     else
-      get(which(value)).insert_node(value)
+      get(which(key)).insert_node(key, value)
     end
   end
 
   def >(node)
     if node.is_a?(BinaryTree)
-      self.value > node.value
+      self.key > node.key
     else
-      self.value > node
+      self.key > node
     end
   end
 
   def <(node)
     if node.is_a?(BinaryTree)
-      self.value < node.value
+      self.key < node.key
     else
-      self.value < node
+      self.key < node
     end
   end
 
@@ -80,11 +72,25 @@ class BinaryTree
     end
   end
 
-  def find_parent(value)
-    if self == value
+  def find_parent_value(key)
+    if self.key == key
+      return [ self.value, nil ]
+    elsif (@left && @key > key ) || ( @right && @key <= key )
+      node, parent = *get(which(key)).find_parent_value(key)
+      unless parent
+        return node, self.value
+      else
+        return node, parent
+      end
+    end
+    nil
+  end
+
+  def find_parent(key)
+    if self.key == key
       return [ self, nil ]
-    elsif (@left && @value > value ) || ( @right && @value <= value )
-      node, parent = *get(which(value)).find_parent(value)
+    elsif (@left && @key > key ) || ( @right && @key <= key )
+      node, parent = *get(which(key)).find_parent(key)
       unless parent
         return node, self
       else
@@ -94,23 +100,16 @@ class BinaryTree
     nil
   end
 
-  def delete_node(value)
-    node, parent = *find_parent(value)
+  def delete_node(key)
+    node, parent = *find_parent(key)
     if node.left
-      target_node, target_parent = *self.find_parent(find_target_to_swap(node).value)
+      target_node, target_parent = *find_parent(find_target_to_swap(node).key)
+      node.key = target_node.key
       node.value = target_node.value
-      #set(which(target_node.value), target_node.left)
-      if target_parent < target_node
-        target_parent.right = target_node.left
-      elsif
-        target_parent.left = target_node.left
-      end
+      target_parent.right = target_node.left
     elsif node.right
-      if parent < node
-        parent.right = node.right
-      else
-        parent.left = node.right
-      end
+      parent.left  = node.right if parent >  node
+      parent.right = node.right if parent < node
     else
       parent.clear(which(node))
     end
@@ -133,24 +132,13 @@ class BinaryTree
       self
     end
   end
+
 end
 
 if $0 == __FILE__
-  tree_node = BinaryTree.new(20)
-  tree_node.insert_node(15)
-  tree_node.insert_node(10)
-  tree_node.insert_node(18)
-  tree_node.insert_node(5)
-  tree_node.insert_node(13)
-  tree_node.insert_node(30)
-  tree_node.insert_node(25)
-  tree_node.insert_node(23)
-  tree_node.insert_node(28)
-  tree_node.insert_node(35)
-  #tree_node.delete_node(15)
-  #tree_node.delete_node(30)
-  #p tree_node.set(:right, tree_node.right)
-  #b, c = *tree_node.get(tree_node.which(10)).find_parent(10)
-  #p d, e = *tree_node.find_parent(10)
-  #p b.value, c.value
+  tree_node = BinaryTree.new(10, "starfish")
+  tree_node.insert_node(25, "squid")
+  tree_node.insert_node(15, "krill")
+
+  p tree_node.right.value
 end
