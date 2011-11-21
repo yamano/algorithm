@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class BinaryTree
   def initialize(key = nil, value = nil)
     @key = key
@@ -32,12 +33,13 @@ class BinaryTree
   def which(key)
     if key < @key
       :left
-    else
+      else
       :right
     end
   end
 
   def insert_node(key, value)
+    #　同じキーは挿入しない。
     return nil if @key == key
 
     unless @key && @value
@@ -50,84 +52,90 @@ class BinaryTree
 
   def >(node)
     if node.is_a?(BinaryTree)
-      self.key > node.key
+      @key > node.key
     else
-      self.key > node
+      @key > node
     end
   end
 
   def <(node)
     if node.is_a?(BinaryTree)
-      self.key < node.key
+      @key < node.key
     else
-      self.key < node
+      @key < node
     end
   end
 
   def ==(node)
     if node.is_a?(BinaryTree)
-      self.value == node.value
+      @value == node.value
+      @key   == node.key
     else
       self.value == node
     end
   end
-
-  def find_parent_value(key)
-    if self.key == key
-      return [ self.value, nil ]
-    elsif (@left && @key > key ) || ( @right && @key <= key )
-      node, parent = *get(which(key)).find_parent_value(key)
-      unless parent
-        return node, self.value
-      else
-        return node, parent
-      end
+  
+  def has_children(direction)
+    if direction
+      send("has_children_#{direction}")
+    else
+      nil
     end
-    nil
+  end
+
+  def has_children_left
+    @left ? true : false
+  end
+
+  def has_children_right
+    @right ? true : false
   end
 
   def find_parent(key)
-    if self.key == key
+    if @key == key
       return [ self, nil ]
-    elsif (@left && @key > key ) || ( @right && @key <= key )
+    elsif has_children(which(key))
       node, parent = *get(which(key)).find_parent(key)
-      unless parent
-        return node, self
+      if parent
+        return [ node, parent ]
+      elsif node
+        return [ node, self ]
       else
-        return node, parent
+        return [ nil, nil ]                            #nodeがnilなら、キーを探索できていないので[ nil, nil ]を返す。
       end
     end
-    nil
+    [ nil, nil ]
   end
 
+  def set(direction, node)
+    send("set_#{direction}", node)
+  end
+
+  def set_left(node)
+    @left = node
+  end
+
+  def set_right(node)
+    @right = node
+  end
+  
   def delete_node(key)
     node, parent = *find_parent(key)
     if node.left
-      target_node, target_parent = *find_parent(find_target_to_swap(node).key)
-      node.key = target_node.key
-      node.value = target_node.value
-      target_parent.right = target_node.left
+      max_node, max_parent = *find_parent(node.left.find_max_node.key)
+      node.key = max_node.key
+      node.value = max_node.value
+      max_parent.right = max_node.left
     elsif node.right
-      parent.left  = node.right if parent >  node
-      parent.right = node.right if parent < node
+      parent.set(parent.which(node), node.right)
     else
       parent.clear(which(node))
     end
   end
   
-  def find_target_to_swap(node)
-    if node.left
-      node.left.search_max_node
-    elsif node.right
-      node.right
-    else
-      nil
-    end
-  end
-  
-  def search_max_node
-    if self.right
-      self.right.search_max_node
+  def find_max_node
+    if @right
+      @right.find_max_node
     else
       self
     end
@@ -137,8 +145,10 @@ end
 
 if $0 == __FILE__
   tree_node = BinaryTree.new(10, "starfish")
+  tree_node.insert_node(20, "aaaaaaaaaa")
   tree_node.insert_node(25, "squid")
   tree_node.insert_node(15, "krill")
+  tree_node.insert_node(30, "eeeeeeeeeee")
 
-  p tree_node.right.value
+  p tree_node.find_parent(28).map{|a| a.key if a}
 end
