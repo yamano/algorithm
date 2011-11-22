@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 class String
   def simple_search(target)
-    self.each_char.with_index do | item, index |
-      if slice( index, target.size ) == target
-        show_answer(index, target)
+    self.size.times do | i |
+      if slice( i, target.size ) == target
+        show_answer(i, target)
         return true
       end
     end
@@ -11,8 +11,8 @@ class String
   false
   end
 
-  def show_answer(index, target)
-    puts "#{self}の#{index}番目に#{target}が見つかりました。"
+  def show_answer(i, target)
+    puts "#{self}の#{i + 1}番目に#{target}が見つかりました。"
   end
 
   def show_error(target)

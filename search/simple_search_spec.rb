@@ -6,5 +6,7 @@ describe 'simple_search' do
 
   it { "abcde".simple_search('fg').should == false }
 
-  it { "abcde".simple_search('bd').should == false }
+  it { "hallo world!".simple_search('world').should == true }
+
+  it { "ABCDE".simple_search('bcd').should == false }
 end
