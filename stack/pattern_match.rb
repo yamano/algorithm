@@ -3,7 +3,7 @@ class Pattern_match
   def pattern_match(contents)
     stack = []
     queue = []
-    contents.zeach_char.with_index do |item ,i|
+    contents.each_char.with_index do |item ,i|
       if (item == "(" ) || (item == "{")
         stack.push( { char => item , position => i } )
       elsif item == ")"
