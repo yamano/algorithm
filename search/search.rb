@@ -13,7 +13,7 @@ class String
     slide_table = Array.new(target.length, 0)
     left_char = 0
     right_char = 1
-    while target.length > right_char
+    while self[right_char]
       if target[right_char] == target[left_char]
         right_char += 1
         left_char += 1
@@ -53,7 +53,7 @@ class String
     target.each_char.with_index do |item, index|
       slide_hash[item] = target.length - index - 1
     end
-    slide_hash
+    p slide_hash
   end
   
   def bm_search(target)

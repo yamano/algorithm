@@ -15,6 +15,10 @@ describe 'search' do
 
   end
 
+  context "make_slide_table_test" do
+    it { String.new.make_slide_table("abc").should == [0, 0, 0] }
+  end
+  
   context "kmp_search_test" do
 
     it "検索対象が存在する場合" do
@@ -33,6 +37,11 @@ describe 'search' do
       "ABCDE".kmp_search('bcd').should == nil
     end
 
+  end
+
+  context "make_slide_table_test" do
+    it { String.new.make_slide_hash("abc").should == { "a" => 2, "b" => 1, "c" => 0 } }
+    it { String.new.make_slide_hash("baggage").should == { "b" => 6, "a" => 2, "g" => 1, "e" => 0 } }
   end
 
   context "bm_search_test" do
