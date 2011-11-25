@@ -17,22 +17,28 @@ describe 'search' do
 
   context "make_slide_table_test" do
     it { String.new.make_slide_table("abc").should == [0, 0, 0] }
+    it { String.new.make_slide_table("abcabc").should == [0, 0, 0, 0, 1, 2] }
+    it { String.new.make_slide_table("ababbabcab").should == [0, 0, 0, 1, 2, 0, 1, 2, 0, 1] }
   end
   
   context "kmp_search_test" do
 
     it "検索対象が存在する場合" do
-      "abcdefghi".kmp_search('gh').should == 7
+      "abcdefghi".kmp_search('gh').should == [7]
     end
 
-    it { "ababc".kmp_search('abc').should == 3 }
-    it { "acabc".kmp_search('abc').should == 3 }
-    it { "abaac".kmp_search('aac').should == 3 }
+    it { "ababc".kmp_search('abc').should == [3] }
+    it { "acabc".kmp_search('abc').should == [3] }
+    it { "abaac".kmp_search('aac').should == [3] }
     
     it "ムダを省く場合" do
-      "abcabcabcda".kmp_search('abcabcd').should == 4
+      "abcabcabcda".kmp_search('abcabcd').should == [4]
     end
-    
+
+    it "検索対象が複数存在する場合" do
+      "abcabcabcabc".kmp_search("abc").should == [1, 4, 7, 10]
+    end
+
     it "検索対象が存在しない場合" do
       "ABCDE".kmp_search('bcd').should == nil
     end
@@ -47,19 +53,23 @@ describe 'search' do
   context "bm_search_test" do
     
     it "ターゲットにない文字が見つかった場合" do
-      "a glowing gleam growing green.".bm_search('gleam').should == 11 
+      "a glowing gleam growing green.".bm_search('gleam').should == [11] 
     end
     
     it "不一致を起こした文字がパターンに含まれる場合" do
-      "i wind ...".bm_search('wind').should == 3
+      "i wind ...".bm_search('wind').should == [3]
     end
     
     it "不一致を起こした文字がパターンに複数含まれる場合" do
-      "....baggage on".bm_search('baggage').should == 5
+      "....baggage on".bm_search('baggage').should == [5]
     end
     
     it "検索位置が戻ってしまう場合" do
-      ".antenna.kana".bm_search('kana').should == 10
+      ".antenna.kana".bm_search('kana').should == [10]
+    end
+
+    it "検索対象が複数存在する場合" do
+      "abcabcabcabc".bm_search("abc").should == [1, 4, 7, 10]
     end
 
     it "検索対象が存在しない場合" do

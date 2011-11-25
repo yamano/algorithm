@@ -11,18 +11,17 @@ class String
 
   def make_slide_table(target)
     slide_table = Array.new(target.length, 0)
-    left_char = 0
-    right_char = 1
-    while self[right_char]
-      if target[right_char] == target[left_char]
-        right_char += 1
-        left_char += 1
-        slide_table[right_char] = left_char
-      elsif left_char == 0
-        right_char += 1
-        slide_table[right_char] = 0
+    repeat_index = 0
+    target_index = 1
+    while target[target_index + 1]
+      if target[target_index] == target[repeat_index]
+        target_index += 1
+        repeat_index += 1
+        slide_table[target_index] = repeat_index
+      elsif repeat_index == 0
+        target_index += 1
       else
-        left_char = slide_table[left_char]
+        repeat_index = slide_table[repeat_index]
       end
     end
     slide_table
@@ -32,12 +31,14 @@ class String
     slide_table = make_slide_table(target)
     position = 0
     target_index = 0
+    index_array = []
     while self[position]
       if self[position] == target[target_index]
         position += 1
         target_index += 1
         if target.length == target_index
-          return position - target.length + 1
+          index_array.push(position - target.length + 1)
+          target_index = 0
         end
       elsif target_index == 0
         position += 1
@@ -45,7 +46,7 @@ class String
         target_index = slide_table[target_index]
       end
     end
-    nil
+    index_array == [] ? nil : index_array
   end
 
   def make_slide_hash(target)
@@ -53,18 +54,20 @@ class String
     target.each_char.with_index do |item, index|
       slide_hash[item] = target.length - index - 1
     end
-    p slide_hash
+    slide_hash
   end
   
   def bm_search(target)
     position   = target.length - 1
     slide_hash = make_slide_hash(target)
+    index_array = []
     while self[position]
       target_index = target.length - 1
       position_copy = position
       while self[position] == target[target_index]
         if target_index == 0
-          return position + 1
+          index_array.push(position + 1)
+          break
         end
         position   -= 1
         target_index -= 1
@@ -80,7 +83,7 @@ class String
         position += target.length
       end
     end
-    nil
+    index_array == [] ? nil : index_array
   end
 
 end
