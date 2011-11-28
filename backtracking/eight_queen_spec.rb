@@ -38,7 +38,7 @@ describe 'EightQueen' do
   end
 
   it 'solve_test' do
-    @e_q.board.should == [[true, false, false, false, false, false, false, false],
+    @e_q.answer_array[0].should == [[true, false, false, false, false, false, false, false],
                                    [false, false, false, false, true, false, false, false],
                                    [false, false, false, false, false, false, false, true],
                                    [false, false, false, false, false, true, false, false],
@@ -48,5 +48,8 @@ describe 'EightQueen' do
                                    [false, false, false, true, false, false, false, false]]
   end
 
+  it 'multi_solve_test' do
+    @e_q.answer_array.size.should == 92
+  end
 
 end

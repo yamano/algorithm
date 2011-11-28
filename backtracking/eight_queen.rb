@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class EightQueen
   
   def initialize
@@ -5,20 +6,23 @@ class EightQueen
     @board.each_index do |i|
       @board[i] = Array.new(8, false)
     end
-    
+    @answer_array = []
   end
-  attr_accessor :board 
+  attr_accessor :board ,:answer_array
 
-  def check(x, y)    
+  def check(x, y) 
+    #左方向
     x.times do |i|
       return false if @board[i][y]
     end
     
+    #左上方向
     short =  x > y ? y : x 
     short.times do |i|
       return false if @board[x - i - 1][y - i -1]
     end
       
+    #左下方向
     short = x > 8 - y ? 8 - y : x
     short.times do |i|
       return false if @board[x - i - 1][y + i + 1]
@@ -29,8 +33,9 @@ class EightQueen
 
   def solve(x)
     if x == 8
-      # @answer_array.push(@board)
-      return true
+      board_data =  Marshal.load(Marshal.dump(@board))
+      @answer_array.push(board_data)
+      return false
     end
     @board[x].each_index do |i|
       if check(x, i)
@@ -48,14 +53,7 @@ class EightQueen
 end
 
 if $0 == __FILE__
-  #p board = EightQueen.new
-  #a=Array.new(8, nil)
-  #p a[0] = Array.new(8, nil)
-  #p a[0][0]
   a = EightQueen.new
-  #p a
-  #p a.check(3, 3)
   a.solve(0)
-  #p a.board[0][2]
   p a.answer_array.size
 end
