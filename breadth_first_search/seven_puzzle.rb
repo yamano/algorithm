@@ -13,15 +13,16 @@ class SevenPuzzle
   def solve
     swap_number
     @history_queue.push(@puzzle)
-    while pattern_queue
-    
-      @puzzle = pattern_queue.shift
-      @history_queue.push(@puzzle)
+    while @pattern_queue != []
+      @puzzle = @pattern_queue.shift
       if @puzzle == [[   1,   2,   3,   4],
                      [   5,   6,   7, nil]]
         return true
       else
-        swap_number
+        unless @history_queue.include?(@puzzle)
+          @history_queue.push(@puzzle)
+          swap_number
+        end
       end
     end
   end
@@ -29,7 +30,7 @@ class SevenPuzzle
   def swap_number
     @puzzle.each_index do |i|
       @puzzle[i].each_with_index do |item, j|
-        if item == nil
+        unless item
           swap(i, j,     i, j + 1)
           swap(i, j, i - 1,     j)
           swap(i, j,     i, j - 1)
@@ -39,19 +40,12 @@ class SevenPuzzle
     end 
   end
 
-  def push_tmp(tmp)
-    if @history_pueue
-      return if @history_pueue.include?(tmp)
-    end
-    @pattern_queue.push(tmp)
-  end
-
   def swap(i, j, swap_i, swap_j)
     tmp = Marshal.load(Marshal.dump(@puzzle))
     if swap_j < 4 && swap_i >=0 && swap_j >= 0 && swap_i < 2 
       tmp[swap_i][swap_j], tmp[i][j] = tmp[i][j], tmp[swap_i][swap_j]
       
-      push_tmp(tmp)
+      @pattern_queue.push(tmp)
     end
   end
   
@@ -62,6 +56,11 @@ if $0 == __FILE__
   puzz.puzzle = [[2, 7, 1, 4],
                  [5, nil, 3, 6]]
 
-  puzz.solve
+  puzz1 = SevenPuzzle.new
+  puzz1.puzzle = [[1, 2, 3, 4],
+                  [nil, 5, 6, 7]]
+
+  puzz1.solve
   
 end
+

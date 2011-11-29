@@ -87,7 +87,7 @@ describe 'seven_puzzle' do
     it{ @puzz3.solve.should == true }
     it{ @puzz4.solve.should == true }
     it{ @puzz5.solve.should == true }
-    #it{ @puzz6.solve.should == true }
+    it{ @puzz6.solve.should == true }
   end
 
 end
