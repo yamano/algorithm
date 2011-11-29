@@ -81,6 +81,7 @@ describe 'seven_puzzle' do
   context '7パズルを解く' do
     it{ @puzz3.solve.should == true }
     it{ @puzz4.solve.should == true }
+    #it{ @puzz5.solve.should == true }
   end
 
 end

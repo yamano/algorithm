@@ -35,11 +35,25 @@ class SevenPuzzle
     end 
   end
 
+  def push_tmp(tmp)
+    if @pattern_queue == []
+      @pattern_queue.push(tmp)
+    else        
+      @pattern_queue.each do |item|
+        if tmp == item
+          break
+        end
+      end
+      @pattern_queue.push(tmp)
+    end
+  end
+
   def swap_right(i, j)
     tmp = Marshal.load(Marshal.dump(@puzzle))
     if j + 1 < 4
       tmp[i][j + 1], tmp[i][j] = tmp[i][j], tmp[i][j + 1]
-      @pattern_queue.push(tmp)
+      
+      push_tmp(tmp)
     end
   end
 
@@ -47,7 +61,8 @@ class SevenPuzzle
     tmp = Marshal.load(Marshal.dump(@puzzle))
     if i -1 >= 0
       tmp[i - 1][j], tmp[i][j] = tmp[i][j], tmp[i - 1][j]
-      @pattern_queue.push(tmp)
+
+      push_tmp(tmp)
     end
   end
 
@@ -55,7 +70,8 @@ class SevenPuzzle
     tmp = Marshal.load(Marshal.dump(@puzzle))
     if j - 1 >= 0
       tmp[i][j - 1], tmp[i][j] = tmp[i][j], tmp[i][j - 1]
-      @pattern_queue.push(tmp)
+      
+      push_tmp(tmp)
     end
   end
 
@@ -63,17 +79,21 @@ class SevenPuzzle
     tmp = Marshal.load(Marshal.dump(@puzzle))
     if i + 1 < 2
       tmp[i + 1][j], tmp[i][j] = tmp[i][j], tmp[i + 1][j]
-      @pattern_queue.push(tmp)
+      
+      push_tmp(tmp)
     end
   end
-
+  
 end
 
 if $0 == __FILE__
   puzz = SevenPuzzle.new
 
-  puzz.puzzle = [[1, 2, nil, 4],
-                 [5, 6, 3, 7]]
+  puzz.puzzle = [[2, 7, 1, 4],
+                 [5, nil, 3, 6]]
 
-  p puzz.solve
+  puzz.swap_number
+  puzz.puzzle = puzz.pattern_queue.shift
+  puzz.swap_number
+  p puzz.pattern_queue
 end
