@@ -6,13 +6,17 @@ class SevenPuzzle
       @puzzle[i] = Array.new(4, nil)
     end
     @pattern_queue = []
+    @history_queue = []
   end
-  attr_accessor :puzzle, :pattern_queue
+  attr_accessor :puzzle, :pattern_queue, :history_queue
 
   def solve
     swap_number
+    @history_queue.push(@puzzle)
     while pattern_queue
+    
       @puzzle = pattern_queue.shift
+      @history_queue.push(@puzzle)
       if @puzzle == [[   1,   2,   3,   4],
                      [   5,   6,   7, nil]]
         return true
@@ -26,59 +30,26 @@ class SevenPuzzle
     @puzzle.each_index do |i|
       @puzzle[i].each_with_index do |item, j|
         if item == nil
-          swap_right(i, j)
-          swap_up(i, j)
-          swap_left(i, j)
-          swap_down(i, j)
+          swap(i, j,     i, j + 1)
+          swap(i, j, i - 1,     j)
+          swap(i, j,     i, j - 1)
+          swap(i, j, i + 1,     j)
         end
       end
     end 
   end
 
   def push_tmp(tmp)
-    if @pattern_queue == []
-      @pattern_queue.push(tmp)
-    else        
-      @pattern_queue.each do |item|
-        if tmp == item
-          break
-        end
-      end
-      @pattern_queue.push(tmp)
+    if @history_pueue
+      return if @history_pueue.include?(tmp)
     end
+    @pattern_queue.push(tmp)
   end
 
-  def swap_right(i, j)
+  def swap(i, j, swap_i, swap_j)
     tmp = Marshal.load(Marshal.dump(@puzzle))
-    if j + 1 < 4
-      tmp[i][j + 1], tmp[i][j] = tmp[i][j], tmp[i][j + 1]
-      
-      push_tmp(tmp)
-    end
-  end
-
-  def swap_up(i, j)
-    tmp = Marshal.load(Marshal.dump(@puzzle))
-    if i -1 >= 0
-      tmp[i - 1][j], tmp[i][j] = tmp[i][j], tmp[i - 1][j]
-
-      push_tmp(tmp)
-    end
-  end
-
-  def swap_left(i, j)
-    tmp = Marshal.load(Marshal.dump(@puzzle))
-    if j - 1 >= 0
-      tmp[i][j - 1], tmp[i][j] = tmp[i][j], tmp[i][j - 1]
-      
-      push_tmp(tmp)
-    end
-  end
-
-  def swap_down(i, j)
-    tmp = Marshal.load(Marshal.dump(@puzzle))
-    if i + 1 < 2
-      tmp[i + 1][j], tmp[i][j] = tmp[i][j], tmp[i + 1][j]
+    if swap_j < 4 && swap_i >=0 && swap_j >= 0 && swap_i < 2 
+      tmp[swap_i][swap_j], tmp[i][j] = tmp[i][j], tmp[swap_i][swap_j]
       
       push_tmp(tmp)
     end
@@ -88,12 +59,9 @@ end
 
 if $0 == __FILE__
   puzz = SevenPuzzle.new
-
   puzz.puzzle = [[2, 7, 1, 4],
                  [5, nil, 3, 6]]
 
-  puzz.swap_number
-  puzz.puzzle = puzz.pattern_queue.shift
-  puzz.swap_number
-  p puzz.pattern_queue
+  puzz.solve
+  
 end

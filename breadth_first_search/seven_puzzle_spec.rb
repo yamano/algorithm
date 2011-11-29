@@ -20,7 +20,7 @@ describe 'seven_puzzle' do
       answer.puzzle = [[   1,   2,   3,   4],
                        [   5,   6, nil,   7]]
       
-      @puzz.swap_right(1, 1)
+      @puzz.swap(1, 1, 1, 2)
       @puzz.pattern_queue[0].should == answer.puzzle
     end
     
@@ -29,7 +29,7 @@ describe 'seven_puzzle' do
       answer.puzzle = [[   1, nil,   3,   4],
                        [   5,   2,   6,   7]]
       
-      @puzz.swap_up(1, 1)
+      @puzz.swap(1, 1, 0, 1)
       @puzz.pattern_queue[0].should == answer.puzzle
     end
     
@@ -38,7 +38,7 @@ describe 'seven_puzzle' do
       answer.puzzle = [[   1,   2,   3,   4],
                        [ nil,   5,   6,   7]]
       
-      @puzz.swap_left(1, 1)
+      @puzz.swap(1, 1, 1, 0)
       @puzz.pattern_queue[0].should == answer.puzzle
     end
     
@@ -47,7 +47,7 @@ describe 'seven_puzzle' do
       answer.puzzle = [[   1,   2,   3,   4],
                        [   5, nil,   6,   7]]
       
-      @puzz2.swap_down(0, 1)
+      @puzz2.swap(0, 1, 1, 1)
       @puzz2.pattern_queue[0].should == answer.puzzle
     end
     
@@ -74,14 +74,20 @@ describe 'seven_puzzle' do
                      [   5,   2,   6,   7]]
 
     @puzz5 = SevenPuzzle.new
-    @puzz5.puzzle = [[   2,   7,   1,   4],
-                     [   5, nil,   3,   6]]
+    @puzz5.puzzle = [[ nil,   2,   3,   4],
+                     [   1,   5,   6,   7]]
+
+    @puzz6 = SevenPuzzle.new
+    @puzz6.puzzle = [[   4, nil,   3,   2],
+                     [   5,   6,   7,   1]]
+    
   end
 
   context '7パズルを解く' do
     it{ @puzz3.solve.should == true }
     it{ @puzz4.solve.should == true }
-    #it{ @puzz5.solve.should == true }
+    it{ @puzz5.solve.should == true }
+    #it{ @puzz6.solve.should == true }
   end
 
 end
