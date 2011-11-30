@@ -19,7 +19,8 @@ class SevenPuzzle
       @pattern = @pattern_queue.shift
       if @pattern == [[   1,   2,   3,   4],
                       [   5,   6,   7, nil]]
-        return true
+        #Todo 返り値はステップ数にしたかったが保留中
+        return true                                          
       else
         unless @history_array.include?(@pattern)
           @history_array.push(@pattern)
@@ -30,6 +31,7 @@ class SevenPuzzle
   end
     
   def swap_four_direction
+    # nilの位置を探して4方向とスワップする。
     @pattern.each_index do |i|
       @pattern[i].each_with_index do |item, j|
         unless item
