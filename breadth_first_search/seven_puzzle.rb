@@ -7,43 +7,48 @@ class SevenPuzzle
       @pattern[i] = Array.new(4, nil)
     end
     @pattern_queue = []
-    @history_array = []
+    @pattern_history = []
   end
   attr_accessor :pattern, :pattern_queue, :history_array
 
   def solve
-    swap_four_direction
-    @history_array.push(@pattern)
+    @pattern_queue.push(@pattern)
     
-    while @pattern_queue != []
-      @pattern = @pattern_queue.shift
+    while @pattern = @pattern_queue.shift
       if @pattern == [[   1,   2,   3,   4],
                       [   5,   6,   7, nil]]
         #Todo 返り値はステップ数にしたかったが保留中
-        return true                                          
+        return true                                
       else
-        unless @history_array.include?(@pattern)
-          @history_array.push(@pattern)
-          swap_four_direction
+        unless @pattern_history.include?(@pattern)
+          @pattern_history.push(@pattern)
+          search_next_pattern
         end
       end
     end
+    nil
   end
     
-  def swap_four_direction
-    # nilの位置を探して4方向とスワップする。
+  def search_next_pattern
+    # nilの位置を探す。
+    tmp_i = 0;
+    tmp_j = 0;
     @pattern.each_index do |i|
       @pattern[i].each_with_index do |item, j|
         unless item
-          swap(i, j,     i, j + 1)
-          swap(i, j, i - 1,     j)
-          swap(i, j,     i, j - 1)
-          swap(i, j, i + 1,     j)
+          tmp_i, tmp_j = i, j
+          break
         end
       end
-    end 
-  end
+    end
 
+    # 4方向を調べて、入れ替える対象がパズル内ならばスワップする。
+    swap_right(tmp_i, tmp_j)
+    swap_up(tmp_i, tmp_j)
+    swap_left(tmp_i, tmp_j)
+    swap_down(tmp_i, tmp_j)
+  end
+  
   def swap(i, j, swap_i, swap_j)
     tmp = Marshal.load(Marshal.dump(@pattern))
     
@@ -54,7 +59,23 @@ class SevenPuzzle
       @pattern_queue.push(tmp)
     end
   end
-  
+
+  def swap_right(i, j)
+    swap(i, j, i, j + 1)
+  end
+
+  def swap_up(i, j)
+    swap(i, j, i - 1, j)
+  end
+
+  def swap_left(i, j)
+    swap(i, j, i, j - 1)
+  end
+
+  def swap_down(i, j)
+    swap(i, j, i + 1, j)
+  end
+    
 end
 
 if $0 == __FILE__

@@ -13,14 +13,14 @@ describe 'seven_puzzle' do
                      [   5,   2,   6,   7]]
   end
 
-  context 'shift_test' do
+  context '各方向と入れ替わっているかのテスト' do
 
     it '右と入れ替える' do
       answer = SevenPuzzle.new
       answer.pattern = [[   1,   2,   3,   4],
                        [   5,   6, nil,   7]]
       
-      @puzz.swap(1, 1, 1, 2)
+      @puzz.swap_right(1, 1)
       @puzz.pattern_queue[0].should == answer.pattern
     end
     
@@ -29,7 +29,7 @@ describe 'seven_puzzle' do
       answer.pattern = [[   1, nil,   3,   4],
                        [   5,   2,   6,   7]]
       
-      @puzz.swap(1, 1, 0, 1)
+      @puzz.swap_up(1, 1)
       @puzz.pattern_queue[0].should == answer.pattern
     end
     
@@ -38,7 +38,7 @@ describe 'seven_puzzle' do
       answer.pattern = [[   1,   2,   3,   4],
                        [ nil,   5,   6,   7]]
       
-      @puzz.swap(1, 1, 1, 0)
+      @puzz.swap_left(1, 1)
       @puzz.pattern_queue[0].should == answer.pattern
     end
     
@@ -47,12 +47,12 @@ describe 'seven_puzzle' do
       answer.pattern = [[   1,   2,   3,   4],
                        [   5, nil,   6,   7]]
       
-      @puzz2.swap(0, 1, 1, 1)
+      @puzz2.swap_down(0, 1)
       @puzz2.pattern_queue[0].should == answer.pattern
     end
     
     it '入れ替えたものをキューに入れる' do
-      @puzz.swap_four_direction
+      @puzz.search_next_pattern
       @puzz.pattern_queue.should == [[[   1,   2,   3,   4],
                                       [   5,   6, nil,   7]],
                                      
@@ -78,8 +78,8 @@ describe 'seven_puzzle' do
                      [   1,   5,   6,   7]]
 
     @puzz6 = SevenPuzzle.new
-    @puzz6.pattern = [[   4, nil,   3,   2],
-                     [   5,   6,   7,   1]]
+    @puzz6.pattern = [[   1,   2,   3,   4],
+                      [   5,   6,   7, nil]]
     
   end
 
@@ -87,7 +87,7 @@ describe 'seven_puzzle' do
     it{ @puzz3.solve.should == true }
     it{ @puzz4.solve.should == true }
     it{ @puzz5.solve.should == true }
-    #it{ @puzz6.solve.should == true }
+    it{ @puzz6.solve.should == true }
   end
 
 end
