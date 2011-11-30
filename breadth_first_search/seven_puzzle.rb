@@ -1,35 +1,37 @@
+# -*- coding: utf-8 -*-
 class SevenPuzzle
 
   def initialize
-    @puzzle = Array.new(2, nil)
-    @puzzle.each_index do |i|
-      @puzzle[i] = Array.new(4, nil)
+    @pattern = Array.new(2, nil)
+    @pattern.each_index do |i|
+      @pattern[i] = Array.new(4, nil)
     end
     @pattern_queue = []
-    @history_queue = []
+    @history_array = []
   end
-  attr_accessor :puzzle, :pattern_queue, :history_queue
+  attr_accessor :pattern, :pattern_queue, :history_array
 
   def solve
-    swap_number
-    @history_queue.push(@puzzle)
+    swap_four_direction
+    @history_array.push(@pattern)
+    
     while @pattern_queue != []
-      @puzzle = @pattern_queue.shift
-      if @puzzle == [[   1,   2,   3,   4],
-                     [   5,   6,   7, nil]]
+      @pattern = @pattern_queue.shift
+      if @pattern == [[   1,   2,   3,   4],
+                      [   5,   6,   7, nil]]
         return true
       else
-        unless @history_queue.include?(@puzzle)
-          @history_queue.push(@puzzle)
-          swap_number
+        unless @history_array.include?(@pattern)
+          @history_array.push(@pattern)
+          swap_four_direction
         end
       end
     end
   end
     
-  def swap_number
-    @puzzle.each_index do |i|
-      @puzzle[i].each_with_index do |item, j|
+  def swap_four_direction
+    @pattern.each_index do |i|
+      @pattern[i].each_with_index do |item, j|
         unless item
           swap(i, j,     i, j + 1)
           swap(i, j, i - 1,     j)
@@ -41,10 +43,12 @@ class SevenPuzzle
   end
 
   def swap(i, j, swap_i, swap_j)
-    tmp = Marshal.load(Marshal.dump(@puzzle))
-    if swap_j < 4 && swap_i >=0 && swap_j >= 0 && swap_i < 2 
+    tmp = Marshal.load(Marshal.dump(@pattern))
+    
+    # 入れ替える対象がパズル内ならばスワップする。
+    if swap_j < 4 && swap_i >=0 && swap_j >= 0 && swap_i < 2
+ 
       tmp[swap_i][swap_j], tmp[i][j] = tmp[i][j], tmp[swap_i][swap_j]
-      
       @pattern_queue.push(tmp)
     end
   end
@@ -52,12 +56,12 @@ class SevenPuzzle
 end
 
 if $0 == __FILE__
-  puzz = SevenPuzzle.new
-  puzz.puzzle = [[2, 7, 1, 4],
+  puzz = SevenPattern.new
+  puzz.pattern = [[2, 7, 1, 4],
                  [5, nil, 3, 6]]
 
-  puzz1 = SevenPuzzle.new
-  puzz1.puzzle = [[1, 2, 3, 4],
+  puzz1 = SevenPattern.new
+  puzz1.pattern = [[1, 2, 3, 4],
                   [nil, 5, 6, 7]]
 
   puzz1.solve
