@@ -2,10 +2,7 @@
 class SevenPuzzle
 
   def initialize
-    @pattern = Array.new(2, nil)
-    @pattern.each_index do |i|
-      @pattern[i] = Array.new(4, nil)
-    end
+    @pattern = 4.times.map{Array.new(2)}
     @pattern_queue = []
     @pattern_history = []
   end
