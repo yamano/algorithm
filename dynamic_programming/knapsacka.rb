@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Knapsacka
 
   KNAPSACKA_SIZE_MAX = 16
@@ -5,26 +6,37 @@ class Knapsacka
   def initialize(size, value)
     @size = size
     @value = value
-    @knapsacka_value = @value.length.times.map{Array.new(KNAPSACKA_SIZE_MAX)}
+    # knapsacka_valueは商品の個数とナップザックの対象サイズの二重配列に最高の価値を格納するもの。
+    @knapsacka = Array.new(KNAPSACKA_SIZE_MAX)
   end
-  attr_accessor :size, :value, :knapsacka_value
+  attr_accessor :size, :value, :knapsacka
 
-  def pack
+  def calculation_value
     @value.length.times do |i|
-      KNAPSACKA_SIZE_MAX.times do |knapsacka_size|
+      KNAPSACKA_SIZE_MAX.times do |j|
         if i == 0
-          knapsacka_value[i][knapsacka_size] = (knapsacka_size + 1) / @size[i] * @size[i]
+          # ナップザックの対象サイズに1種類の商品がいくつふくまれているか計算し、そこから価値を計算
+          @knapsacka[j] = (j + 1) / @size[i] * @value[i]
         else
-          new_value = knapsacka_value[i -1][knapsacka_size - @size[i]] + value[i]
-          knapsacka_value[i][knapsacka_size] = update_value(new_value, knapsacka_value[i - 1][knapsacka_size])
+          # 商品の種類を増やしたときに最適解を更新する
+          update_knapsacka(i, j)
         end
       end
     end
-    knapsacka_value[@value.length - 1][KNAPSACKA_SIZE_MAX - 1]
+    @knapsacka[KNAPSACKA_SIZE_MAX - 1]
   end
 
-  def update_value(new_value, old_value)
-    new_value > old_value ? new_value : old_value
+  def update_knapsacka(i, j)
+    if j == @size[i] - 1
+      new_value = @value[i]
+    elsif j >= @size[i]
+      # 
+      new_value = @knapsacka[j - @size[i]] + @value[i]
+    else
+      new_value = 0
+    end
+    # 商品を増やす前と増やした後で価値の大きい方を最適解として代入
+    @knapsacka[j] = new_value >  @knapsacka[j] ? new_value : @knapsacka[j]
   end
 
 end
@@ -36,6 +48,9 @@ if $0 == __FILE__
 
   ex = Knapsacka.new(size.map{|i| i}, value.map{|i| i})
 
-  ex.pack
+  p ex.calculation_value
+
+  p ex.knapsacka_value
+
 
 end
