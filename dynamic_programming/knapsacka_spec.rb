@@ -5,7 +5,7 @@ describe 'knapsacka' do
   before do
     size  = [2, 3, 5, 6, 9]
     value = [2, 4, 7, 10, 14]
-    @ex = Knapsacka.new(size.map{|i| i}, value.map{|i| i})
+    @ex = Knapsacka.new(size, value)
     @ex.solve
   end
 
