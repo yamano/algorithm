@@ -6,7 +6,7 @@ class Knapsacka
   def initialize(size, value)
     @size = size
     @value = value
-    # knapsackaは商品の種類と個数のハッシュを配列として格納するもの。
+    # knapsackaは商品のサイズと個数のハッシュを配列として格納するもの。
     @knapsacka = []
   end
   attr_accessor :size, :value, :knapsacka
