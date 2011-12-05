@@ -2,23 +2,26 @@
 require './knapsacka.rb'
 
 describe 'knapsacka' do
+  
   before do
-    size  = [2, 3, 5, 6, 9]
-    value = [2, 4, 7, 10, 14]
-    @ex = Knapsacka.new(size, value)
-    @ex.solve
+    products = [
+                Product.new(2, 2),
+                Product.new(3, 4),
+                Product.new(5, 7),
+                Product.new(6, 10),
+                Product.new(9, 14),
+               ]
+    @knapsacka = Knapsacka.new(products)
   end
 
   it 'sizeとvalueの初期化テスト' do
-    @ex.size.should == [2, 3, 5, 6, 9]
-    @ex.value.should == [2, 4, 7, 10, 14]
+    @knapsacka.products[1].size = 3
+    @knapsacka.products[1].value = 4
   end
 
-  it '全ての種類の商品を使った場合の最適解を出したときのサイズと個数の関係のテスト' do
-    @ex.solve.should == [{2=>0}, {2=>1}, {4=>1}, {2=>2}, {7=>1}, {10=>1},
-                         {2=>0, 10=>1}, {2=>1, 10=>1}, {4=>1, 10=>1}, {7=>2}, {7=>1, 10=>1},
-                         {10=>2}, {2=>0, 10=>2}, {2=>1, 10=>2}, {4=>1, 10=>2}, {7=>2, 10=>1}]
-    
+  it 'サイズ16の場合、最適の価値は24である。' do
+    @knapsacka.solve(16)
+    @knapsacka.total_value(16)
   end
 
 end
