@@ -1,50 +1,72 @@
 # -*- coding: utf-8 -*-
 class Gragh
-  def initialize(matrix, stations)
-    @stations_hash = {}
-    stations.each do |station|
-      @stations_hash[station] = Station.new(station)
+  def initialize(matrix, nodes)
+    @node_data = {}
+    nodes.each do |node|
+      @node_data[node] = Node.new(node)
     end
     
-    @_hash = {}
-    stations.each.with_index do |station, index|
-      @adjancency = {station => matrix[index]})
+    @time_table = {}
+    nodes.each.with_index do |origin_node, origin_index|
+      table  =  {}
+      nodes.each.with_index do |destination_node, destination_index|
+        table[destination_node] = matrix[origin_index][destination_index]
+      end
+      @time_table[origin_node] = table
     end
-    
-  end
-  attr_accessor :adjancency, :stations_hash
 
-  def solve_shortest_distance(start_station, goal_station)
-    start_station.distance = 0
-    stations.each do |station|
-      update_distance
+  end
+  attr_accessor :node_data, :time_table
+  
+  def solve_shortest_time(start_node, goal_node)
+    @node_data[start_node].transit_time = 0
+    #@node_data[start_node].course = [start_node]
+    update_transit_value(start_node, start_node, goal_node)
+  end
+  
+  def update_transit_value(before_node, present_node, goal_node)
+    
+    @time_table[present_node].each_pair do |node, time|
+      unless @node_data[before_node].course.index(node)
+        unless time == 0
+          p node
+          p @node_data[node].transit_time = time + @node_data[before_node].transit_time
+          p @node_data[node].course = @node_data[before_node].course + [node]
+          #unless node == before_node
+            update_transit_value(present_node, node, goal_node)
+          #end
+        end
+      else
+      return @node_data[goal_node].transit_time if present_node == goal_node
+      end    
     end
   end
+#  end
   
-  def update_distance
+#  def check_distance
     
-  end
-  
-  def check_distance
     
-  end
+#  end
   
 end
 
-class Station
+class Node
   def initialize(name)
     @name  =  name
-    @distance = -1
+    @transit_time = -1
     @course = []
+    @check = 0
   end
-  attr_accessor :name, :distance, :course
+  attr_accessor :name, :transit_time, :course, :check
 end
 
 if $0 == __FILE__
-  matrix  =  [[1, 2],
-              [3, 4]]
+  matrix  =  [[0, 2, 0],
+              [2, 0, 3],
+              [0, 3, 0]]
   
-  stations  =  [:abc, :def]
+  stations  =  [:a, :b, :c]
   gragh = Gragh.new(matrix, stations)
-  #gragh.solve_shortest_distance(stations[0], stations[1])
+  p gragh.solve_shortest_time(:a, :c)
+  p gragh.node_data[:c].course
 end

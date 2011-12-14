@@ -17,16 +17,11 @@ describe "gragh" do
   end
 
   it "初期化テスト" do
-    @gragh.adjancency.should == [{ :yokohama => [  0, 12, 28,  0, 0, 0] },
-                                 { :musashikosugi => [ 12,  0, 10, 13, 0, 0] },
-                                 { :shinagawa => [ 28, 10,  0, 11, 7, 0] },
-                                 { :shibuya => [  0, 13, 11,  0, 0, 9] },
-                                 { :shinbashi => [  0,  0,  7,  0, 0, 4] },
-                                 { :tameikesannou => [  0,  0,  0,  9, 4, 0] }]
-    
-    @gragh.adjancency[:yokohama].should  == [  0, 12, 28,  0, 0, 0]
+    @gragh.time_table[:yokohama][:shinagawa].should == 28    
 
-    @gragh.stations_hash[:yokohama].distance.should == -1
+
+    @gragh.node_data[:yokohama].transit_time.should == -1
+    @gragh.node_data[:yokohama].course.should == []
   end
 
   it "" do
@@ -38,8 +33,10 @@ describe "gragh" do
   end
 
   it "" do
-    @gragh.solve_shortest_distance(@stations[0], @stations[5]).should == 33
-    @stations[5].course.should == ["横浜", "武蔵小杉", "品川", "新橋", "溜池山王"]
+    @gragh.solve_shortest_time(:yokohama, :tameikesannou).should == 33
   end
-
+  
+  it "" do
+    @gragh.node_data[:tameikesannou].course.should == [:yokohama, :musashikosugi, :shinagawa, :shibuya, :shinbashi, :tameikesannou]
+  end
 end
