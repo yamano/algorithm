@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-class Gragh
+class Graph
   def initialize(matrix = [], nodes = [])
     # ノードのシンボルを渡せばクラスが返ってくるようにnodes_dataを初期化。
     @nodes_data = {}
@@ -17,37 +17,61 @@ class Gragh
       @time_table[origin_node] = table
     end
 
+    @order_queue = []
+    
+    @finish_nodes = []
+
   end
-  attr_accessor :nodes_data, :time_table
+  attr_accessor :nodes_data, :time_table, :order_queue, :finish_nodes
   
   def solve_shortest_time(start_node)
+    
+    # 初期化
+    @nodes_data.each_value do |node_class|
+      node_class.transit_time = nil
+      node_class.course = []
+    end
+    
     # スタート地点の移動時間と経路を初期化。
     @nodes_data[start_node].transit_time = 0
     @nodes_data[start_node].course = [start_node]
-    # 次の
-    update(start_node, start_node)
+    @order_queue.push(start_node)
+    update_nodes_data
   end
   
-  def update(prev_node, current_node)
-    @time_table[current_node].each_pair do |next_node, time|      
-      # 隣接しているnodeを探す。
-      unless time == 0
-        # 以前いたノードの経路に次のノードが含まれていないことを確認。
-        unless @nodes_data[prev_node].course.index(next_node)
-          new_transit_time = @nodes_data[current_node].transit_time + time
-          # 新しい移動時間のほうが短ければ移動時間と経路を更新。
-          if compare_transit_time(@nodes_data[next_node].transit_time, new_transit_time)
-            @nodes_data[next_node].transit_time = new_transit_time
-            @nodes_data[next_node].course = @nodes_data[current_node].course + [next_node]
-            update(current_node, next_node)
+  def update_nodes_data
+    while current_node = @order_queue.shift    
+      @finish_nodes.push(current_node)
+      @time_table[current_node].each_pair do |next_node, time|      
+        # 隣接しているnodeを探す。
+        unless time == 0
+          # 以前いたノードの経路に次のノードが含まれていないことを確認。
+          unless  @finish_nodes.index(next_node)
+            new_transit_time = @nodes_data[current_node].transit_time + time
+            # 新しい移動時間のほうが短ければ移動時間と経路を更新。
+            if compare_transit_time(@nodes_data[next_node].transit_time, new_transit_time)
+              @nodes_data[next_node].transit_time = new_transit_time
+              @nodes_data[next_node].course = @nodes_data[current_node].course + [next_node]
+              @order_queue.push(next_node)
+            end
           end
-        end  
+        end
       end
+      p @order_queue
+      sort_queue
+      update_nodes_data
     end
   end
-
+  
   def compare_transit_time(old_transit_time, new_transit_time)
     old_transit_time == nil || new_transit_time < old_transit_time
+  end
+
+  # todo ソートの実装
+  def sort_queue
+    @order_queue.each do |node|
+      #p node
+    end
   end
 
 
@@ -69,7 +93,7 @@ if $0 == __FILE__
             [ 0, 15, 10,  0]]
   
   stations = [:a, :b, :c, :d]
-  gragh = Gragh.new(matrix, stations)
+  gragh = Graph.new(matrix, stations)
   gragh.solve_shortest_time(:a)
   p gragh.nodes_data[:d].course
   p gragh.nodes_data[:d].transit_time

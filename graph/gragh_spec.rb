@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require File.expand_path("gragh", File.dirname(__FILE__))
 
-describe "gragh" do
+describe "graph" do
 
   context "初期化テスト" do
 
@@ -14,19 +14,19 @@ describe "gragh" do
                 [ 0, 15, 10,  0]]
       # nodesは各ノードのシンボルが格納。
       nodes = [:a, :b, :c, :d] 
-      @gragh = Gragh.new(matrix, nodes)
+      @graph = Graph.new(matrix, nodes)
     end
 
     it "nodes_data[:a]のtransit_timeに初期値であるnilが入っている" do
-      @gragh.nodes_data[:a].transit_time.should == nil
+      @graph.nodes_data[:a].transit_time.should == nil
     end
     
     it "nodes_data[:a]のcourseに初期値である[]が入っている" do
-      @gragh.nodes_data[:a].course.should == []
+      @graph.nodes_data[:a].course.should == []
     end
 
     it "出発地と到着地から移動時間を出力。bからdまでは15が返ってくる" do
-      @gragh.time_table[:b][:d].should == 15
+      @graph.time_table[:b][:d].should == 15
     end
       
   end
@@ -34,15 +34,23 @@ describe "gragh" do
   context "各メソッドのテスト" do
     
     before do
-      @gragh2 = Gragh.new
+      @graph2 = Graph.new
     end
-
-    it "新しい値が小さければtrue、大きければfalseが返る。また、古い値がnilでもtrueを返す。" do
-      @gragh2.compare_transit_time(10, 20).should == false
-      @gragh2.compare_transit_time(20, 10).should == true
-      @gragh2.compare_transit_time(nil, 10).should == true
+      
+    [[ 10, 20, false],
+     [ 20, 10,  true],
+     [nil, 10,  true]
+    ].each do |old, new, answer|
+      it "古い値#{old}と新しい値#{new}を比較すると#{answer}が出力される" do
+        @graph2.compare_transit_time(old, new).should == answer
+      end
     end
+  end
 
+  it "" do
+    @graph2.order_queue = [Graph.new([], 10), Graph.new([], 5), Graph.new([], 8)]
+    p @graph2
+    @graph2.sort_queue
   end
 
   context "yokohamaをスタート地点にして各駅に最短経路で行ったときの移動時間と経路のテスト" do
@@ -56,32 +64,28 @@ describe "gragh" do
                  [  0,  0,  0,  9, 4, 0]]
       stations  = [:yokohama, :musashikosugi, :shinagawa, :shibuya, :shinbashi, :tameikesannou]
       
-      @gragh3 = Gragh.new(matrix, stations)
-      @gragh3.solve_shortest_time(:yokohama)
-    end
-    
-    it "yokohamaまで最短経路で行ったときの移動時間は22となる" do
-      @gragh3.nodes_data[:yokohama].transit_time.should == 0
+      @graph3 = Graph.new(matrix, stations)
+      # 複数回行った時は最後に行われた結果になる。
+      @graph3.solve_shortest_time(:shinagawa)
+      @graph3.solve_shortest_time(:yokohama)
     end
 
-    it "yokohamaまでの最短経路はyokohama, musakikosugi, shinagawaとなる" do
-      @gragh3.nodes_data[:yokohama].course.should == [:yokohama]
+    [[:yokohama, [:yokohama]],
+     [:shibuya, [:yokohama, :musashikosugi, :shibuya]],
+     [:tameikesannou, [:yokohama, :musashikosugi, :shinagawa, :shinbashi, :tameikesannou]]
+    ].each do |start_node, course|
+      it "#{start_node}までの最短経路は#{course}となる" do
+        @graph3.nodes_data[start_node].course.should == course
+      end
     end
 
-    it "shinagawaまで最短経路で行ったときの移動時間は22となる" do
-      @gragh3.nodes_data[:shibuya].transit_time.should == 25
-    end
-    
-    it "shinagawaまでの最短経路はyokohama, musakikosugi, shinagawaとなる" do
-    @gragh3.nodes_data[:shibuya].course.should == [:yokohama, :musashikosugi, :shibuya]
-    end
-      
-    it "tameikesannnouまで最短経路で行ったときの移動時間は33となる" do
-      @gragh3.nodes_data[:tameikesannou].transit_time.should == 33
-    end
-    
-    it "tameikesannnouまでの最短経路はyokohama, musakikosugi, shinagawa, shinbashi, tameikesannouとなる" do
-      @gragh3.nodes_data[:tameikesannou].course.should == [:yokohama, :musashikosugi, :shinagawa, :shinbashi, :tameikesannou]
+    [[:yokohama,       0],
+     [:shibuya,       25],
+     [:tameikesannou, 33]
+    ].each do |start_node, answer|
+      it "#{start_node}まで最短経路で行ったときの移動時間は#{answer}となる" do
+        @graph3.nodes_data[start_node].transit_time.should == answer
+      end
     end
 
   end
