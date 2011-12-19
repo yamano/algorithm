@@ -18,7 +18,6 @@ class Graph
     end
 
     @order_queue = []
-    
     @finish_nodes = []
 
   end
@@ -31,34 +30,37 @@ class Graph
       node_class.transit_time = nil
       node_class.course = []
     end
+    @finish_nodes = []
     
     # スタート地点の移動時間と経路を初期化。
     @nodes_data[start_node].transit_time = 0
     @nodes_data[start_node].course = [start_node]
-    @order_queue.push(start_node)
+    @order_queue.push([start_node, @nodes_data[start_node].transit_time])
     update_nodes_data
   end
   
   def update_nodes_data
-    while current_node = @order_queue.shift    
-      @finish_nodes.push(current_node)
-      @time_table[current_node].each_pair do |next_node, time|      
-        # 隣接しているnodeを探す。
-        unless time == 0
-          # 以前いたノードの経路に次のノードが含まれていないことを確認。
-          unless  @finish_nodes.index(next_node)
-            new_transit_time = @nodes_data[current_node].transit_time + time
-            # 新しい移動時間のほうが短ければ移動時間と経路を更新。
-            if compare_transit_time(@nodes_data[next_node].transit_time, new_transit_time)
-              @nodes_data[next_node].transit_time = new_transit_time
-              @nodes_data[next_node].course = @nodes_data[current_node].course + [next_node]
-              @order_queue.push(next_node)
+    while current_node = @order_queue.shift
+      current_node = current_node[0]
+      unless @finish_nodes.index(current_node)
+        @finish_nodes.push(current_node)
+        @time_table[current_node].each_pair do |next_node, time|
+          # 隣接しているnodeを探す。
+          unless time == 0
+            # 以前いたノードの経路に次のノードが含まれていないことを確認。
+            unless  @finish_nodes.index(next_node)
+              new_transit_time = @nodes_data[current_node].transit_time + time
+              # 新しい移動時間のほうが短ければ移動時間と経路を更新。
+              if compare_transit_time(@nodes_data[next_node].transit_time, new_transit_time)
+                @nodes_data[next_node].transit_time = new_transit_time
+                @nodes_data[next_node].course = @nodes_data[current_node].course + [next_node]
+                @order_queue.push([next_node, @nodes_data[next_node].transit_time])
+              end
             end
           end
         end
+        @order_queue.sort! {|a,b| a[1] <=> b[1]}
       end
-      p @order_queue
-      sort_queue
       update_nodes_data
     end
   end
@@ -66,14 +68,6 @@ class Graph
   def compare_transit_time(old_transit_time, new_transit_time)
     old_transit_time == nil || new_transit_time < old_transit_time
   end
-
-  # todo ソートの実装
-  def sort_queue
-    @order_queue.each do |node|
-      #p node
-    end
-  end
-
 
 end
 
