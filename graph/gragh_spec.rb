@@ -42,7 +42,7 @@ describe "graph" do
      [nil, 10,  true]
     ].each do |old, new, answer|
       it "古い値#{old}と新しい値#{new}を比較すると#{answer}が出力される" do
-        @graph2.which_shorter?(old, new).should == answer
+        @graph2.shorter?(old, new).should == answer
       end
     end
   end
@@ -60,7 +60,7 @@ describe "graph" do
       
       @graph3 = Graph.new(matrix, stations)
       # 複数回行うと最後の結果が反映される。初期化されているかのテスト
-      @graph3.solve_shortest_path(:shinagawa)
+      #@graph3.solve_shortest_path(:shinagawa)
       @graph3.solve_shortest_path(:yokohama)
     end
 

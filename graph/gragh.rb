@@ -23,51 +23,50 @@ class Graph
   end
   attr_accessor :nodes_data, :time_table, :order_queue, :finish_nodes
   
-  def solve_shortest_path(start_node)
-    
-    # リセット
+  def reset
     @nodes_data.each_value do |node_class|
       node_class.path_length = nil
       node_class.course = []
     end
     @finish_nodes = []
-    
-    # スタート地点の移動時間と経路を初期化。
-    @nodes_data[start_node].path_length = 0
-    @nodes_data[start_node].course = [start_node]
-    @order_queue.push([start_node, @nodes_data[start_node].path_length])
+  end
+
+
+  def solve_shortest_path(start_node)
+    reset    
+    update(start_node, start_node, 0)
     update_nodes_data
   end
   
   def update_nodes_data
-    while current_node_with_path_length = @order_queue.shift
+    while current_node_with_path_length = @order_queue.sort! {|a,b| a[1] <=> b[1]}.shift
       current_node = current_node_with_path_length[0]
+      current_path_length = current_node_with_path_length[1]
       if should_be_update?(current_node)
-        @finish_nodes.push(current_node)
-        @time_table[current_node].each_pair do |next_node, time|
-          # 隣接しているかどうかの確認。
-          unless time == 0
-            new_path_length = @nodes_data[current_node].path_length + time
-            # 新しい移動時間のほうが短ければ移動時間と経路を更新。
-            if which_shorter?(@nodes_data[next_node].path_length, new_path_length)
-              @nodes_data[next_node].path_length = new_path_length
-              @nodes_data[next_node].course = @nodes_data[current_node].course + [next_node]
-              @order_queue.push([next_node, @nodes_data[next_node].path_length])
-            end
+        @finish_nodes.push(current_node)        
+        @time_table[current_node].select{|node, length| length != 0}.each_pair do |next_node, path_length|
+          new_path_length = current_path_length + path_length
+          if shorter?(@nodes_data[next_node].path_length, new_path_length)
+            update(current_node, next_node, new_path_length)
           end
         end
-        @order_queue.sort! {|a,b| a[1] <=> b[1]}
       end
-      update_nodes_data
     end
     nil
   end
 
+  def update(current_node, next_node, new_path_length)
+    @nodes_data[next_node].path_length = new_path_length
+    @nodes_data[next_node].course = @nodes_data[current_node].course + [next_node]
+    @order_queue.push([next_node, @nodes_data[next_node].path_length])
+  end
+
   def should_be_update?(current_node)
-    !@finish_nodes.index(current_node)
+    !@finish_nodes.include?(current_node)
+    #@nodes_data[current_node].path_length == nil
   end
   
-  def which_shorter?(old, new)
+  def shorter?(old, new)
     old == nil || new < old
   end
 
