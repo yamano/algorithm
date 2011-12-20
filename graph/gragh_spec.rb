@@ -17,8 +17,8 @@ describe "graph" do
       @graph = Graph.new(matrix, nodes)
     end
 
-    it "nodes_data[:a]のtransit_timeに初期値であるnilが入っている" do
-      @graph.nodes_data[:a].transit_time.should == nil
+    it "nodes_data[:a]のpath_lengthに初期値であるnilが入っている" do
+      @graph.nodes_data[:a].path_length.should == nil
     end
     
     it "nodes_data[:a]のcourseに初期値である[]が入っている" do
@@ -42,7 +42,7 @@ describe "graph" do
      [nil, 10,  true]
     ].each do |old, new, answer|
       it "古い値#{old}と新しい値#{new}を比較すると#{answer}が出力される" do
-        @graph2.compare_transit_time(old, new).should == answer
+        @graph2.which_shorter?(old, new).should == answer
       end
     end
   end
@@ -59,8 +59,9 @@ describe "graph" do
       stations  = [:yokohama, :musashikosugi, :shinagawa, :shibuya, :shinbashi, :tameikesannou]
       
       @graph3 = Graph.new(matrix, stations)
-      @graph3.solve_shortest_time(:shinagawa)
-      @graph3.solve_shortest_time(:yokohama)
+      # 複数回行うと最後の結果が反映される。初期化されているかのテスト
+      @graph3.solve_shortest_path(:shinagawa)
+      @graph3.solve_shortest_path(:yokohama)
     end
 
     [[:yokohama, [:yokohama]],
@@ -78,7 +79,7 @@ describe "graph" do
      [:tameikesannou, 33]
     ].each do |start_node, answer|
       it "#{start_node}まで最短経路で行ったときの移動時間は#{answer}となる" do
-       # @graph3.nodes_data[start_node].transit_time.should == answer
+        @graph3.nodes_data[start_node].path_length.should == answer
       end
     end
 

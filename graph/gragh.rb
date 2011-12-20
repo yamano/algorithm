@@ -23,39 +23,36 @@ class Graph
   end
   attr_accessor :nodes_data, :time_table, :order_queue, :finish_nodes
   
-  def solve_shortest_time(start_node)
+  def solve_shortest_path(start_node)
     
-    # 初期化
+    # リセット
     @nodes_data.each_value do |node_class|
-      node_class.transit_time = nil
+      node_class.path_length = nil
       node_class.course = []
     end
     @finish_nodes = []
     
     # スタート地点の移動時間と経路を初期化。
-    @nodes_data[start_node].transit_time = 0
+    @nodes_data[start_node].path_length = 0
     @nodes_data[start_node].course = [start_node]
-    @order_queue.push([start_node, @nodes_data[start_node].transit_time])
+    @order_queue.push([start_node, @nodes_data[start_node].path_length])
     update_nodes_data
   end
   
   def update_nodes_data
-    while current_node = @order_queue.shift
-      current_node = current_node[0]
-      unless @finish_nodes.index(current_node)
+    while current_node_with_path_length = @order_queue.shift
+      current_node = current_node_with_path_length[0]
+      if should_be_update?(current_node)
         @finish_nodes.push(current_node)
         @time_table[current_node].each_pair do |next_node, time|
-          # 隣接しているnodeを探す。
+          # 隣接しているかどうかの確認。
           unless time == 0
-            # 以前いたノードの経路に次のノードが含まれていないことを確認。
-            unless  @finish_nodes.index(next_node)
-              new_transit_time = @nodes_data[current_node].transit_time + time
-              # 新しい移動時間のほうが短ければ移動時間と経路を更新。
-              if compare_transit_time(@nodes_data[next_node].transit_time, new_transit_time)
-                @nodes_data[next_node].transit_time = new_transit_time
-                @nodes_data[next_node].course = @nodes_data[current_node].course + [next_node]
-                @order_queue.push([next_node, @nodes_data[next_node].transit_time])
-              end
+            new_path_length = @nodes_data[current_node].path_length + time
+            # 新しい移動時間のほうが短ければ移動時間と経路を更新。
+            if which_shorter?(@nodes_data[next_node].path_length, new_path_length)
+              @nodes_data[next_node].path_length = new_path_length
+              @nodes_data[next_node].course = @nodes_data[current_node].course + [next_node]
+              @order_queue.push([next_node, @nodes_data[next_node].path_length])
             end
           end
         end
@@ -63,10 +60,15 @@ class Graph
       end
       update_nodes_data
     end
+    nil
+  end
+
+  def should_be_update?(current_node)
+    !@finish_nodes.index(current_node)
   end
   
-  def compare_transit_time(old_transit_time, new_transit_time)
-    old_transit_time == nil || new_transit_time < old_transit_time
+  def which_shorter?(old, new)
+    old == nil || new < old
   end
 
 end
@@ -74,10 +76,10 @@ end
 class Node
   def initialize(name)
     @name = name
-    @transit_time
+    @path_length
     @course = []
   end
-  attr_accessor :name, :transit_time, :course
+  attr_accessor :name, :path_length, :course
 end
 
 if $0 == __FILE__
@@ -88,7 +90,7 @@ if $0 == __FILE__
   
   stations = [:a, :b, :c, :d]
   gragh = Graph.new(matrix, stations)
-  gragh.solve_shortest_time(:a)
+  gragh.solve_shortest_path(:a)
   p gragh.nodes_data[:d].course
-  p gragh.nodes_data[:d].transit_time
+  p gragh.nodes_data[:d].path_length
 end
