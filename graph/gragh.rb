@@ -1,75 +1,77 @@
 # -*- coding: utf-8 -*-
 class Graph
   def initialize(matrix = [], nodes = [])
-    # ノードのシンボルを渡せばクラスが返ってくるようにnodes_dataを初期化。
-    @nodes_data = {}
+    # ノードのシンボルを渡せばクラスが返ってくるようにresultを初期化。
+    @results = {}
     nodes.each do |node|
-      @nodes_data[node] = Node.new(node)
+      @results[node] = Node.new(node)
     end
     
-    # 出発地と到着地ののシンボルを渡せば隣接時間が返ってくるようにtime_tableを初期化。
-    @time_table = {}
+    # 出発地と到着地ののシンボルを渡せば隣接時間が返ってくるようにmatrixを初期化。
+    @matrix = {}
     nodes.each.with_index do |origin_node, origin_index|
       table = {}
       nodes.each.with_index do |destination_node, destination_index|
         table[destination_node] = matrix[origin_index][destination_index]
       end
-      @time_table[origin_node] = table
+      @matrix[origin_node] = table
     end
 
-    @order_queue = []
-    @finish_nodes = []
+    @nodes_with_path_length_queue = []
+    @finished_nodes = []
 
   end
-  attr_accessor :nodes_data, :time_table, :order_queue, :finish_nodes
+  attr_accessor :results, :matrix, :nodes_with_path_length_queue, :finished_nodes
   
   def reset
-    @nodes_data.each_value do |node_class|
+    @results.each_value do |node_class|
       node_class.path_length = nil
       node_class.course = []
     end
-    @finish_nodes = []
+    @finished_nodes = []
   end
-
 
   def solve_shortest_path(start_node)
-    reset    
-    update(start_node, start_node, 0)
-    update_nodes_data
+    reset
+    update_tmp_result(start_node, start_node, 0)
+    update_results
   end
   
-  def update_nodes_data
-    while current_node_with_path_length = @order_queue.sort! {|a,b| a[1] <=> b[1]}.shift
+  def update_results
+    while current_node_with_path_length = @nodes_with_path_length_queue.sort! {|a,b| a[1] <=> b[1]}.shift
       current_node = current_node_with_path_length[0]
       current_path_length = current_node_with_path_length[1]
+
       if should_be_update?(current_node)
-        @finish_nodes.push(current_node)        
-        @time_table[current_node].select{|node, length| length != 0}.each_pair do |next_node, path_length|
+        @finished_nodes.push(current_node)
+        @matrix[current_node].select{|node, length| length != 0}.each_pair do |next_node, path_length|
           new_path_length = current_path_length + path_length
-          if shorter?(@nodes_data[next_node].path_length, new_path_length)
-            update(current_node, next_node, new_path_length)
+          if shorter?(@results[next_node].path_length, new_path_length)
+            update_tmp_result(current_node, next_node, new_path_length)
           end
         end
+
       end
+
     end
     nil
   end
 
-  def update(current_node, next_node, new_path_length)
-    @nodes_data[next_node].path_length = new_path_length
-    @nodes_data[next_node].course = @nodes_data[current_node].course + [next_node]
-    @order_queue.push([next_node, @nodes_data[next_node].path_length])
+  def update_tmp_result(current_node, next_node, new_path_length)
+    @results[next_node].path_length = new_path_length
+    @results[next_node].course = @results[current_node].course + [next_node]
+    @nodes_with_path_length_queue.push([next_node, @results[next_node].path_length])
   end
 
   def should_be_update?(current_node)
-    !@finish_nodes.include?(current_node)
-    #@nodes_data[current_node].path_length == nil
-  end
-  
-  def shorter?(old, new)
-    old == nil || new < old
+    !@finished_nodes.include?(current_node)
+    #@result[current_node].path_length == nil
   end
 
+  def shorter?(old, new)
+    old == nil || old > new
+  end
+  
 end
 
 class Node
@@ -90,6 +92,6 @@ if $0 == __FILE__
   stations = [:a, :b, :c, :d]
   gragh = Graph.new(matrix, stations)
   gragh.solve_shortest_path(:a)
-  p gragh.nodes_data[:d].course
-  p gragh.nodes_data[:d].path_length
+  p gragh.results[:d].course
+  p gragh.results[:d].path_length
 end

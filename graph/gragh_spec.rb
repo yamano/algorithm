@@ -17,16 +17,16 @@ describe "graph" do
       @graph = Graph.new(matrix, nodes)
     end
 
-    it "nodes_data[:a]のpath_lengthに初期値であるnilが入っている" do
-      @graph.nodes_data[:a].path_length.should == nil
+    it "results[:a]のpath_lengthに初期値であるnilが入っている" do
+      @graph.results[:a].path_length.should == nil
     end
     
-    it "nodes_data[:a]のcourseに初期値である[]が入っている" do
-      @graph.nodes_data[:a].course.should == []
+    it "results[:a]のcourseに初期値である[]が入っている" do
+      @graph.results[:a].course.should == []
     end
 
     it "出発地と到着地から移動時間を出力。bからdまでは15が返ってくる" do
-      @graph.time_table[:b][:d].should == 15
+      @graph.matrix[:b][:d].should == 15
     end
       
   end
@@ -70,7 +70,7 @@ describe "graph" do
     ].each do |start_node, course_ans|
       it "#{start_node}までの最短経路は#{course_ans}となる" do
         
-        @graph3.nodes_data[start_node].course.should == course_ans
+        @graph3.results[start_node].course.should == course_ans
       end
     end
 
@@ -79,7 +79,7 @@ describe "graph" do
      [:tameikesannou, 33]
     ].each do |start_node, answer|
       it "#{start_node}まで最短経路で行ったときの移動時間は#{answer}となる" do
-        @graph3.nodes_data[start_node].path_length.should == answer
+        @graph3.results[start_node].path_length.should == answer
       end
     end
 
