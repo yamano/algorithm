@@ -39,11 +39,27 @@ class Tdiary
   end
 
   def add_body
-    p tmp = @agent.page.search("textarea")[1].inner_text
-    agent.page.form_with(:action => 'http://uuap.src.ricoh.co.jp/index.php'){|f|
+  
+    tmp = @agent.page.search("textarea")[1].inner_text
+    if tmp.include?(@data[:title] + "-tdiary")
+      tmp = tmp[0...tmp.index(@data[:title] + "-tdiary")] 
+    end
+    
+    agent.page.form_with(:action => 'http://uuap.src.ricoh.co.jp/index.php') do |f|
       f.field_with(:name => 'msg').value = tmp + "\n*" + @data[:title] + "-tdiary" + "[/#f7752111]\n" + @data[:body][0..40] + "・・・\n" + @url# + "?date=" + @data[:date][0..3] + @data[:date][5..6] + @data[:date][8..-1]
       f.click_button(f.button_with(:value => "ページの更新"))
-    }
+    end
+
+  end
+  
+  def auto_reflected
+    while true
+      if has_new_diary
+        access_edit_display
+        add_body
+      end
+      sleep 10
+    end
   end
 
 end
@@ -54,16 +70,5 @@ if $0 == __FILE__
   
   yamano.latest
 
-  while true
-  
-    if yamano.has_new_diary
-      p "更新"
-      p yamano.data[:date]
-      p yamano.data[:body]
-      yamano.access_edit_display
-      yamano.add_body
-    end
-    sleep 1
-
-  end
+  yamano.auto_reflected
 end

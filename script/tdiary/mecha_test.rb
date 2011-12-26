@@ -24,7 +24,10 @@ p agent.page.title
 
 #puts agent.page.at("h2").inner_text
 #p "aaaaaaa" + "bbbbbbbbbb"
-p a = agent.page.search('textarea')[1].inner_text
+a = agent.page.search('textarea')[1].inner_text
+#p a.include?("tdiary")
+p a.index("-tdiary")
+p a[0..455]
 #p a = agent.page.search('a')[1].inner_text
 #agent.page.search('a')[0..12].each do |p|
 #  puts p.inner_text
