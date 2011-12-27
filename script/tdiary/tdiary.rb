@@ -21,7 +21,7 @@ class Tdiary
     latest_date[7] = "-"
     latest_date[10] = ""
 
-    latest_title = agent.page.at('h2').inner_text[15..-1]
+    latest_title = agent.page.search('span')[2].inner_text
 
     latest_body = agent.page.search('p')[0].inner_text[2..-1]
     
@@ -40,13 +40,13 @@ class Tdiary
 
   def add_body
   
-    tmp = @agent.page.search("textarea")[1].inner_text
-    if tmp.include?(@data[:title] + "-tdiary")
-      tmp = tmp[0...tmp.index(@data[:title] + "-tdiary")] 
+    original_body = @agent.page.search("textarea")[1].inner_text
+    if original_body.include?(@data[:title] + "-tdiary")
+      original_body = original_body[0...original_body.index("*" + @data[:title] + "-tdiary")] 
     end
     
     agent.page.form_with(:action => 'http://uuap.src.ricoh.co.jp/index.php') do |f|
-      f.field_with(:name => 'msg').value = tmp + "\n*" + @data[:title] + "-tdiary" + "[/#f7752111]\n" + @data[:body][0..40] + "・・・\n" + @url# + "?date=" + @data[:date][0..3] + @data[:date][5..6] + @data[:date][8..-1]
+      f.field_with(:name => 'msg').value = original_body + "\n*" + @data[:title] + "-tdiary" + "[#f7752111]\n" + @data[:body][0..40] + "・・・\n" + @url + "?date=" + @data[:date][0..3] + @data[:date][5..6] + @data[:date][8..-1]
       f.click_button(f.button_with(:value => "ページの更新"))
     end
 

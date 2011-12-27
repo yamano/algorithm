@@ -6,8 +6,8 @@ require 'kconv'
 agent = Mechanize.new
 #agent.get('http://yamano.nsp.ricoh.co.jp:8000/tdiary/update.rb')
 agent.get('http://yamano.nsp.ricoh.co.jp:8000/tdiary/')
-agent.get("http://uuap.src.ricoh.co.jp/index.php?cmd=edit&page=%BB%B3%CC%EE%A4%CE%C6%FC%B5%AD%\
-2F2011-12-26&refer=%BB%B3%CC%EE%A4%CE%C6%FC%B5%AD")
+#agent.get("http://uuap.src.ricoh.co.jp/index.php?cmd=edit&page=%BB%B3%CC%EE%A4%CE%C6%FC%B5%AD%\
+#2F2011-12-26&refer=%BB%B3%CC%EE%A4%CE%C6%FC%B5%AD")
 #agent.get('http://uuap.src.ricoh.co.jp/index.php?%BB%B3%CC%EE%A4%CE%C6%FC%B5%AD')
 #p form = agent.page.form_with(:name => 'f1')
 p agent.page.title
@@ -20,14 +20,16 @@ p agent.page.title
 #agent.page.form_with(:action => 'http://uuap.src.ricoh.co.jp/index.php'){|f|
 #  f.field_with(:name => 'msg').value = "test"
 #  f.click_button(f.button_with(:value => "ページの更新"))
-#}
-
+a = "2011-12-26"
+p  a[0..3] + a[5..6] + a[8..-1]
+#p agent.page.search('a')[1].uri
+#p agent.page.uri 
 #puts agent.page.at("h2").inner_text
 #p "aaaaaaa" + "bbbbbbbbbb"
-a = agent.page.search('textarea')[1].inner_text
+#p agent.page.at('h2').inner_text[15..-1] == agent.page.search('span')[2].inner_text
 #p a.include?("tdiary")
-p a.index("-tdiary")
-p a[0..455]
+#p a.index("-tdiary")
+#p a[0..455]
 #p a = agent.page.search('a')[1].inner_text
 #agent.page.search('a')[0..12].each do |p|
 #  puts p.inner_text
