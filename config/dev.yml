@@ -1,0 +1,7 @@
+dev:
+  aaa:
+    version:
+      revision: 1.1.1
+  bbb:
+    version:
+      revision: 1.1.2
