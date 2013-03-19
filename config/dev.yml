@@ -5,3 +5,6 @@ dev:
   bbb:
     version:
       revision: 1.1.2
+  rails:
+    version:
+      revision: 1.1.1
